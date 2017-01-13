@@ -121,11 +121,10 @@ public class MedicoControlador implements Serializable {
      public void setCitaActual(Cita citaActual){this.citaActual=citaActual;}
 
      
-     public List<Cita> consultarCitasHoy(){ 
-        
-        Date today = Calendar.getInstance().getTime();
+     public List<Cita> consultarCitasHoy(){        
         String DATE_FORMAT = "yyyyMMdd";
         SimpleDateFormat sdf =new SimpleDateFormat(DATE_FORMAT);
+        Date today = Calendar.getInstance().getTime();
         
         return  citaDAO.buscarCitasMedico(medicoActual.getId(),today);
       }
@@ -170,8 +169,33 @@ public class MedicoControlador implements Serializable {
         }
         return destino;
     }
+    
     //Acciones
-    public String doShowCita() {
-        return "detallesCita";
+    public String doShowCita(Cita cita) {
+    	  this.citaActual=cita;
+          String detalles = "showCita";
+          return detalles;
     }
+    
+    
+    /// HEMOS ACTUALIZADO ESTO , QUE ESTABA SIN HACER
+    public void marcarAnulada(){
+        this.citaActual.setEstado(EstadoCita.ANULADA);
+        this.citaActual = this.citaDAO.actualizar(this.citaActual);
+    }
+    
+    
+    public void marcarCompletada(){
+        this.citaActual.setEstado(EstadoCita.COMPLETADA);
+        this.citaActual =this.citaDAO.actualizar(this.citaActual);
+    }
+    
+    public void marcarAusente(){
+        this.citaActual.setEstado(EstadoCita.AUSENTE);
+        this.citaActual = this.citaDAO.actualizar(this.citaActual);
+    }
+    
+ 
+    
+    
 }
