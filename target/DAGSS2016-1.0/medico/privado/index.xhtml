@@ -19,6 +19,54 @@
             </ui:define>
 
             <ui:define name="contenido">
+                <b:modal id="amodal" title="Crear Prescripcion" styleClass="modalPseudoClass">
+                        <p>
+                            <h:form styleClass="modalPseudoClass" id="medicamentos">
+                                <h:outputText  value="Medico: #{medicoControlador.medicoActual.nombre} #{medicoControlador.medicoActual.apellidos}" />
+                                <br/>
+                                <h:outputText  value="Paciente: #{medicoControlador.citaActual.paciente.nombre} #{medicoControlador.citaActual.paciente.apellidos}" />
+                                <br/>
+                                <h:outputText rendered="#{prescripcionControlador.medicamentoSeleccionado != null}" value="Medicamento: #{prescripcionControlador.medicamentoSeleccionado.nombre} - #{prescripcionControlador.medicamentoSeleccionado.principioActivo}" />
+                                <br/>
+                                <b:commandButton rendered="#{prescripcionControlador.medicamentoSeleccionado != null}" value="Eliminar medicamento" update="medicamentos" actionListener="#{prescripcionControlador.unsetMedicamento()}" oncomplete="$('.modalPseudoClass').modal();"/>
+                                <br/>
+                                <b:dateTimePicker value="#{prescripcionControlador.fechaInicio}" label="Fecha inicio:" render-label="true" show-time='false' />
+                                <b:dateTimePicker value="#{prescripcionControlador.fechaFin}" label="Fecha fin:" render-label="true" show-time='false' />
+                                <br/>
+                                <b:inputTextarea rendered="#{prescripcionControlador.medicamentoSeleccionado != null}" placeholder="Indicaciones" value="#{prescripcionControlador.indicaciones}"/>
+                                <br/>
+                                <b:inputText rendered="#{prescripcionControlador.medicamentoSeleccionado != null}" placeholder="Dosis" value="#{prescripcionControlador.dosis}"/>
+                                <br/>
+                                <b:inputText rendered="#{prescripcionControlador.medicamentoSeleccionado == null}" placeholder="Buscar medicamento" binding="#{busqueda}"/>
+                                    <br/>
+                                    <b:radiobutton rendered="#{prescripcionControlador.medicamentoSeleccionado == null}" value="#{prescripcionControlador.tipoBusqueda}">
+                                        <f:selectItem itemValue="Nombre"   itemLabel="Nombre " />
+                                        <f:selectItem itemValue="Principio" itemLabel="Principio Activo " />
+                                        <f:selectItem itemValue="Fabricante"  itemLabel="Fabricante " />
+                                        <f:selectItem itemValue="Familia"  itemLabel="Familia " />
+                                    </b:radiobutton>    
+                                    <br/>
+                                    <b:commandButton rendered="#{prescripcionControlador.medicamentoSeleccionado == null}" value="Buscar" update="medicamentos" actionListener="#{prescripcionControlador.buscarMedicamentos(busqueda.value)}" oncomplete="$('.modalPseudoClass').modal();"/>
+                                    <br/>
+                                    <b:dataTable rendered="#{prescripcionControlador.medicamentoSeleccionado == null}" fixedHeader="true" scroll-size="400px" scroll-x="false" responsive="true" value="#{prescripcionControlador.listaMedicamentos}" var="med">
+                                        <b:dataTableColumn value="#{med.fabricante}" />
+                                        <b:dataTableColumn value="#{med.familia}" />
+                                        <b:dataTableColumn value="#{med.nombre}" />
+                                        <b:dataTableColumn value="#{med.numeroDosis}" />
+                                        <b:dataTableColumn value="#{med.principioActivo}" />
+                                        <b:dataTableColumn>
+                                            <b:commandButton rendered="#{prescripcionControlador.medicamentoSeleccionado == null}" value="Seleccionar" update="medicamentos" actionListener="#{prescripcionControlador.setMedicamento(med)}" oncomplete="$('.modalPseudoClass').modal();"/>    
+                                            <b:commandButton rendered="#{prescripcionControlador.medicamentoSeleccionado != null}" value="Eliminar" update="medicamentos" actionListener="#{prescripcionControlador.unsetMedicamento()}" oncomplete="$('.modalPseudoClass').modal();"/>
+                                        </b:dataTableColumn>
+                                    </b:dataTable>    
+                                    
+                                    <b:commandButton rendered="#{prescripcionControlador.medicamentoSeleccionado != null}" value="Crear" actionListener="#{prescripcionControlador.doPrescripcionNueva(medicoControlador.citaActual)}" oncomplete="location.reload();return false;"/>
+                            </h:form>
+                        </p>
+                    <f:facet name="footer">
+                        <b:button value="close" dismiss="modal" onclick="location.reload();return false;"/>
+                    </f:facet>
+                </b:modal>
                 <b:row class="text-center encabezado1Menu">
                     <b:column col-xs="12">
                     </b:column>
@@ -67,8 +115,10 @@
                                                <b:commandButton value="Ausente" update="agenda detalleCita" actionListener="#{medicoControlador.doFinalizarCitaNoRealizada()}"/>
                                     </b:dataTableColumn>
                                 </b:dataTable>
-                                <b:commandButton value="Crear Prescripcion" look="primary" style="margin-top:10px;"/> 
                             </b:form>
+                            
+                            <button id="btrigger" class="btn btn-primary" data-target="#amodal" data-toggle="modal">Crear prescripcion</button>
+                            
                             <b:panel id="prescripciones" title="Prescripciones" look="info"  style="margin-top: 10px;">
                                 <b:form>
                                     <b:dataTable value="#{prescripcionControlador.getPrescripcionesPaciente(medicoControlador.citaActual.paciente)}" var="prescripcion" style="padding-top:10px;">

@@ -1,6 +1,5 @@
 es/uvigo/esei/dagss/dominio/daos/PacienteDAO.class
 es/uvigo/esei/dagss/controladores/administrador/GestionPacientesControlador.class
-es/uvigo/esei/dagss/controladores/medico/PrescripcionControlador.class
 es/uvigo/esei/dagss/dominio/daos/MedicamentoDAO.class
 es/uvigo/esei/dagss/controladores/paciente/PacienteControlador.class
 es/uvigo/esei/dagss/dominio/entidades/EstadoReceta.class
@@ -28,6 +27,7 @@ es/uvigo/esei/dagss/dominio/entidades/TipoUsuario.class
 es/uvigo/esei/dagss/dominio/daos/MedicoDAO.class
 es/uvigo/esei/dagss/dominio/entidades/CentroSalud.class
 es/uvigo/esei/dagss/controladores/administrador/GestionAdministradoresControlador.class
+es/uvigo/esei/dagss/controladores/prescripcion/PrescripcionControlador.class
 es/uvigo/esei/dagss/controladores/medico/MedicoControlador.class
 es/uvigo/esei/dagss/dominio/entidades/Administrador.class
 es/uvigo/esei/dagss/dominio/entidades/Medico.class

@@ -14,31 +14,31 @@ import javax.persistence.TypedQuery;
 public class MedicamentoDAO extends GenericoDAO<Medicamento> {
 
      public List<Medicamento> buscarPorNombre(String nombre) {
-        TypedQuery<Medicamento> q = em.createQuery("SELECT p FROM Medicamento "
-                                                  + "  WHERE p.nombre = :nombre", Medicamento.class);
+        TypedQuery<Medicamento> q = em.createQuery("SELECT m FROM Medicamento as m"
+                                                  + "  WHERE m.nombre = :nombre", Medicamento.class);
         q.setParameter("nombre", nombre);
         
         return q.getResultList();
     }
      public List<Medicamento> buscarPorPrincipioActivo(String principioActivo) {
-        TypedQuery<Medicamento> q = em.createQuery("SELECT p FROM Medicamento "
-                                                  + "  WHERE p.principioactivo = :principioActivo", Medicamento.class);
+        TypedQuery<Medicamento> q = em.createQuery("SELECT m FROM Medicamento as m"
+                                                  + "  WHERE m.principioActivo = :principioActivo", Medicamento.class);
         q.setParameter("principioActivo", principioActivo);
         
         return q.getResultList();
     }
        
       public List<Medicamento> buscarPorFabricante(String fabricante) {
-        TypedQuery<Medicamento> q = em.createQuery("SELECT p FROM Medicamento "
-                                                  + "  WHERE p.fabricante = :fabricante", Medicamento.class);
+        TypedQuery<Medicamento> q = em.createQuery("SELECT m FROM Medicamento as m"
+                                                  + "  WHERE m.fabricante = :fabricante", Medicamento.class);
         q.setParameter("fabricante", fabricante);
         
         return q.getResultList();
     }
       
       public List<Medicamento> buscarPorFamilia(String familia) {
-        TypedQuery<Medicamento> q = em.createQuery("SELECT p FROM Medicamento "
-                                                  + "  WHERE p.familia = :familia", Medicamento.class);
+        TypedQuery<Medicamento> q = em.createQuery("SELECT m FROM Medicamento as m"
+                                                  + "  WHERE m.familia = :familia", Medicamento.class);
         q.setParameter("familia", familia);
         
         return q.getResultList();

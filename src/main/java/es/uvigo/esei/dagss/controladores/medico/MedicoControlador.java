@@ -127,10 +127,6 @@ public class MedicoControlador implements Serializable {
         Date today = Calendar.getInstance().getTime();
         
         return  citaDAO.buscarCitasMedico(medicoActual.getId(),today);
-      }
-     
-    public void doAddPrescripcion(Medicamento medicamento){
-        prescripcionControlador.doPrescripcionNueva(medicamento, null, null, null, 0, null);
     }
     
     public void doFinalizarCitaRealizada(){
@@ -168,13 +164,6 @@ public class MedicoControlador implements Serializable {
             }
         }
         return destino;
-    }
-    
-    //Acciones
-    public String doShowCita(Cita cita) {
-    	  this.citaActual=cita;
-          String detalles = "showCita";
-          return detalles;
     }
     
     
