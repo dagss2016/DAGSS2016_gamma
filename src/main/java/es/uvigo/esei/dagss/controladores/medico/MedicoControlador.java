@@ -123,7 +123,7 @@ public class MedicoControlador implements Serializable {
      
      public List<Cita> consultarCitasHoy(){        
         String DATE_FORMAT = "yyyyMMdd";
-        SimpleDateFormat sdf =new SimpleDateFormat(DATE_FORMAT);
+        SimpleDateFormat sdf =  new SimpleDateFormat(DATE_FORMAT);
         Date today = Calendar.getInstance().getTime();
         
         return  citaDAO.buscarCitasMedico(medicoActual.getId(),today);

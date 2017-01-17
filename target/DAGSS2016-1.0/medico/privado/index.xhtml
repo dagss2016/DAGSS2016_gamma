@@ -35,16 +35,17 @@
                                 <br/>
                                 <b:inputTextarea rendered="#{prescripcionControlador.medicamentoSeleccionado != null}" placeholder="Indicaciones" value="#{prescripcionControlador.indicaciones}"/>
                                 <br/>
-                                <b:inputText rendered="#{prescripcionControlador.medicamentoSeleccionado != null}" placeholder="Dosis" value="#{prescripcionControlador.dosis}"/>
-                                <br/>
+                                <b:inputText label="Dosis:" rendered="#{prescripcionControlador.medicamentoSeleccionado != null}" placeholder="Dosis" value="#{prescripcionControlador.dosis}"/>
+                                <hr/>
+                                <h:outputText rendered="#{prescripcionControlador.medicamentoSeleccionado == null}" class="text-center" value="BUSQUEDA DE MEDICAMENTOS" />
                                 <b:inputText rendered="#{prescripcionControlador.medicamentoSeleccionado == null}" placeholder="Buscar medicamento" binding="#{busqueda}"/>
                                     <br/>
-                                    <b:radiobutton rendered="#{prescripcionControlador.medicamentoSeleccionado == null}" value="#{prescripcionControlador.tipoBusqueda}">
-                                        <f:selectItem itemValue="Nombre"   itemLabel="Nombre " />
-                                        <f:selectItem itemValue="Principio" itemLabel="Principio Activo " />
-                                        <f:selectItem itemValue="Fabricante"  itemLabel="Fabricante " />
-                                        <f:selectItem itemValue="Familia"  itemLabel="Familia " />
-                                    </b:radiobutton>    
+                                        <b:radiobutton rendered="#{prescripcionControlador.medicamentoSeleccionado == null}" value="#{prescripcionControlador.tipoBusqueda}">
+                                            <f:selectItem itemValue="Nombre"   itemLabel="Nombre "/>
+                                            <f:selectItem itemValue="Principio" itemLabel="Principio Activo " />
+                                            <f:selectItem itemValue="Fabricante"  itemLabel="Fabricante " />
+                                            <f:selectItem itemValue="Familia"  itemLabel="Familia " />
+                                        </b:radiobutton>    
                                     <br/>
                                     <b:commandButton rendered="#{prescripcionControlador.medicamentoSeleccionado == null}" value="Buscar" update="medicamentos" actionListener="#{prescripcionControlador.buscarMedicamentos(busqueda.value)}" oncomplete="$('.modalPseudoClass').modal();"/>
                                     <br/>
@@ -89,7 +90,11 @@
                         <b:panel title="Agenda"  look="info">
                             <b:form>
                                 <b:dataTable  value="#{medicoControlador.consultarCitasHoy()}" var="cita">
-                                   <b:dataTableColumn value="#{cita.hora}" order="desc"/>
+                                    <b:dataTableColumn order="desc" label="Hora">
+                                       <h:outputText value="#{cita.hora}">
+                                           <f:convertDateTime pattern="HH:mm:ss" />
+                                       </h:outputText>
+                                   </b:dataTableColumn>
                                    <b:dataTableColumn value="#{cita.duracion}"/>
                                    <b:dataTableColumn value="#{cita.estado}" />
                                    <b:dataTableColumn value="#{cita.paciente.apellidos},#{cita.paciente.nombre}" />
@@ -121,15 +126,25 @@
                             
                             <b:panel id="prescripciones" title="Prescripciones" look="info"  style="margin-top: 10px;">
                                 <b:form>
-                                    <b:dataTable value="#{prescripcionControlador.getPrescripcionesPaciente(medicoControlador.citaActual.paciente)}" var="prescripcion" style="padding-top:10px;">
+                                    <b:dataTable class="editablePrescription" value="#{prescripcionControlador.getPrescripcionesPaciente(medicoControlador.citaActual.paciente)}" var="prescripcion" style="padding-top:10px;">
                                         <b:dataTableColumn value="#{prescripcion.id}"/>
-                                        <b:dataTableColumn value="#{prescripcion.fechaInicio}" />
-                                        <b:dataTableColumn value="#{prescripcion.fechaFin}" />
+                                        <b:dataTableColumn label="FechaInicio">
+                                            <h:outputText value="#{prescripcion.fechaInicio}" rendered="#{prescripcionControlador.editable != prescripcion.id}"/>
+                                            <b:dateTimePicker value="#{prescripcionControlador.prescripcion.fechaInicio}" show-time='false' rendered="#{prescripcionControlador.editable == prescripcion.id}"/>
+                                        </b:dataTableColumn>
+                                        <b:dataTableColumn label="FechaFin">
+                                            <h:outputText value="#{prescripcion.fechaFin}" rendered="#{prescripcionControlador.editable != prescripcion.id}"/>
+                                            <b:dateTimePicker value="#{prescripcionControlador.prescripcion.fechaFin}" show-time='false' rendered="#{prescripcionControlador.editable == prescripcion.id}"/>
+                                        </b:dataTableColumn>
                                         <b:dataTableColumn value="#{prescripcion.medicamento.nombre}" />
                                         <b:dataTableColumn value="#{prescripcion.dosis}" />
-                                        <b:dataTableColumn value="#{prescripcion.indicaciones}" />
-                                        <b:dataTableColumn>
+                                        <b:dataTableColumn label="Indicaciones">
+                                            <h:outputText value="#{prescripcion.indicaciones}" rendered="#{prescripcionControlador.editable != prescripcion.id}"/>
+                                            <h:inputText value="#{prescripcionControlador.prescripcion.indicaciones}" rendered="#{prescripcionControlador.editable == prescripcion.id}"/>
+                                        </b:dataTableColumn>
+                                        <b:dataTableColumn label="Action">
                                             <b:commandButton value="Eliminar" update="detalleCita" actionListener="#{prescripcionControlador.eliminarPrescripcion(prescripcion)}"/> 
+                                            <b:commandButton value="Editar" icon="edit" update="@(.editablePrescription)" actionListener="#{prescripcionControlador.doModifyPrescription(prescripcion)}"/> 
                                         </b:dataTableColumn>
                                 </b:dataTable>
                             </b:form>

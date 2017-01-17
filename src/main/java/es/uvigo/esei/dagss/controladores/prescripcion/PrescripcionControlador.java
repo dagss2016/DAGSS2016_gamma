@@ -13,17 +13,15 @@ import es.uvigo.esei.dagss.dominio.daos.RecetaDAO;
 import es.uvigo.esei.dagss.dominio.entidades.Cita;
 import es.uvigo.esei.dagss.dominio.entidades.EstadoReceta;
 import es.uvigo.esei.dagss.dominio.entidades.Medicamento;
-import es.uvigo.esei.dagss.dominio.entidades.Medico;
 import es.uvigo.esei.dagss.dominio.entidades.Paciente;
 import es.uvigo.esei.dagss.dominio.entidades.Prescripcion;
 import es.uvigo.esei.dagss.dominio.entidades.Receta;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 
@@ -39,8 +37,10 @@ public class PrescripcionControlador implements Serializable{
     private int dosis;
     
     private Medicamento medicamentoSeleccionado;
-    private Prescripcion prescripcion;
     
+    private long editable=0;
+    
+    private Prescripcion prescripcion=new Prescripcion();
     @EJB
     PrescripcionDAO prescripcionDAO; 
     
@@ -57,7 +57,9 @@ public class PrescripcionControlador implements Serializable{
      *
      * @param citaActual
      */
-    public void doPrescripcionNueva(Cita citaActual){
+    public void doPrescripcionNueva(Cita citaActual) throws Exception{
+        Prescripcion prescripcion = new Prescripcion();
+        
         prescripcion.setPaciente(citaActual.getPaciente());
         prescripcion.setMedicamento(this.medicamentoSeleccionado);
         prescripcion.setMedico(citaActual.getMedico());
@@ -72,12 +74,28 @@ public class PrescripcionControlador implements Serializable{
         Period time = Period.between(begin, end);
         
         int numRecetas=(time.getDays()*this.dosis) / this.medicamentoSeleccionado.getNumeroDosis();
+        
+        if(numRecetas==0){
+            numRecetas=1;
+        }
+        
         prescripcionDAO.crear(prescripcion);
         for(int i=0;i<numRecetas;i++){
             recetaDAO.crear(new Receta(prescripcion,this.medicamentoSeleccionado.getNumeroDosis() ,this.fechaInicio, this.fechaFin, EstadoReceta.GENERADA));
         }
+        unsetMedicamento();
     }
-
+    
+   public void doModifyPrescription(Prescripcion prescripcionO) throws Exception{
+       if(editable==0){
+           editable=prescripcionO.getId();
+           this.prescripcion = prescripcionO;
+       }else{
+           prescripcionDAO.actualizar(this.prescripcion);
+           editable=0;
+       }
+   } 
+    
    public Prescripcion getUltimaPrescripcion(long id) {
        return prescripcionDAO.buscarUltimaPrescripcionPorID( id);
        
@@ -188,6 +206,21 @@ public class PrescripcionControlador implements Serializable{
     public void setDosis(int dosis) {
         this.dosis = dosis;
     }
-    
+
+    public long getEditable() {
+        return editable;
+    }
+
+    public void setEditable(long editable) {
+        this.editable = editable;
+    }
+
+    public Prescripcion getPrescripcion() {
+        return prescripcion;
+    }
+
+    public void setPrescripcion(Prescripcion prescripcion) {
+        this.prescripcion = prescripcion;
+    }
     
 }

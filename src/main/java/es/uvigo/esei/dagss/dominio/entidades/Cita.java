@@ -4,6 +4,8 @@
 package es.uvigo.esei.dagss.dominio.entidades;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Entity;

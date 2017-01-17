@@ -13,7 +13,7 @@ import javax.persistence.TypedQuery;
 @LocalBean
 public class PrescripcionDAO extends GenericoDAO<Prescripcion> {
 
-    public Prescripcion buscarPorIdConRecetas(Long id) {
+    public Prescripcion buscarPorIdConRecetas(long id) {
         TypedQuery<Prescripcion> q = em.createQuery("SELECT p FROM Prescripcion AS p JOIN FETCH p.recetas"
                                                   + "  WHERE p.id = :id", Prescripcion.class);
         q.setParameter("id", id);
